@@ -1,0 +1,20 @@
+{% extends 'base.html' %}
+{% block title %}OEM performance{% endblock %}
+{% block content %}
+<div class="d-flex justify-content-between mb-3">
+  <h4 class="mb-0"><i class="bi bi-cpu"></i> OEM performance</h4>
+  <a href="{{ url_for('reports.oem_performance_xlsx') }}" class="btn btn-sm btn-outline-success"><i class="bi bi-file-earmark-excel"></i> Excel</a>
+</div>
+<div class="card shadow-sm">
+  <div class="table-responsive">
+    <table class="table table-sm table-hover datatable mb-0">
+      <thead><tr><th>OEM</th><th class="text-end">Total</th><th class="text-end">Delivered</th><th class="text-end">Delayed</th><th class="text-end">Avg readiness Δ</th></tr></thead>
+      <tbody>
+        {% for r in rows %}
+          <tr><td>{{ r[0] }}</td><td class="text-end">{{ r[1] }}</td><td class="text-end">{{ r[2] or 0 }}</td><td class="text-end">{{ r[3] or 0 }}</td><td class="text-end">{{ '%.1f' % (r[4] or 0) }}</td></tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</div>
+{% endblock %}

@@ -1,0 +1,26 @@
+{% extends 'base.html' %}
+{% block title %}Activity log{% endblock %}
+{% block content %}
+<h4 class="mb-3"><i class="bi bi-clock-history"></i> Activity log</h4>
+<div class="card shadow-sm">
+  <div class="table-responsive">
+    <table class="table table-sm align-middle mb-0">
+      <thead><tr><th>When</th><th>User</th><th>Action</th><th>Target</th><th>IP</th><th>Detail</th></tr></thead>
+      <tbody>
+        {% for a in pagination.items %}
+          <tr>
+            <td class="text-tiny">{{ a.created_at.strftime('%Y-%m-%d %H:%M') }}</td>
+            <td>{{ a.user.email if a.user else '—' }}</td>
+            <td><code>{{ a.action }}</code></td>
+            <td>{{ a.target_type or '' }}{% if a.target_id %} #{{ a.target_id }}{% endif %}</td>
+            <td class="text-tiny">{{ a.ip_address or '' }}</td>
+            <td class="text-tiny">{{ a.detail or '' }}</td>
+          </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</div>
+{% set endpoint = 'admin.activity' %}
+{% include 'partials/pagination.html' with context %}
+{% endblock %}

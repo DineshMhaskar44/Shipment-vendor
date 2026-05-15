@@ -1,0 +1,17 @@
+{% extends 'base.html' %}
+{% block title %}Settings{% endblock %}
+{% block content %}
+<h4 class="mb-3"><i class="bi bi-gear"></i> System settings</h4>
+<div class="card shadow-sm">
+  <div class="card-body">
+    <p class="text-secondary text-tiny">These values are read from <code>.env</code>. Edit the file and restart the app to change them.</p>
+    <table class="table table-sm">
+      <tbody>
+        {% for k, v in settings.items() %}
+          <tr><th class="text-end" style="width:35%;">{{ k }}</th><td><code>{{ v }}</code></td></tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</div>
+{% endblock %}

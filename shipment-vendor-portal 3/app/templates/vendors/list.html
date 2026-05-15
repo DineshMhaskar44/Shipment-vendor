@@ -1,0 +1,59 @@
+{% extends 'base.html' %}
+{% block title %}Vendors{% endblock %}
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-3 flex-wrap gap-2">
+  <h4 class="mb-0"><i class="bi bi-people"></i> Vendors</h4>
+  <div class="btn-group">
+    {% if current_user.is_admin %}
+      <a href="{{ url_for('vendors.new') }}" class="btn btn-primary btn-sm"><i class="bi bi-plus-lg"></i> New</a>
+    {% endif %}
+    <a href="{{ url_for('vendors.export_xlsx') }}" class="btn btn-outline-success btn-sm"><i class="bi bi-file-earmark-excel"></i> Excel</a>
+  </div>
+</div>
+
+<form class="card card-body shadow-sm mb-3">
+  <div class="row g-2">
+    <div class="col-md-4"><input class="form-control form-control-sm" name="q" placeholder="Search…" value="{{ filters.get('q','') }}"></div>
+    <div class="col-md-3">
+      <select class="form-select form-select-sm" name="category">
+        <option value="">All categories</option>
+        {% for c in ['Logistics','OEM','Hardware','Software','Services','Other'] %}
+          <option value="{{ c }}" {% if filters.get('category')==c %}selected{% endif %}>{{ c }}</option>
+        {% endfor %}
+      </select>
+    </div>
+    <div class="col-md-2"><button class="btn btn-sm btn-primary"><i class="bi bi-funnel"></i> Filter</button></div>
+  </div>
+</form>
+
+<div class="card shadow-sm">
+  <div class="table-responsive">
+    <table class="table table-hover table-sm align-middle mb-0">
+      <thead><tr><th>Company</th><th>Contact</th><th>Email</th><th>Phone</th><th>Category</th><th>Approved</th><th>Rating</th><th></th></tr></thead>
+      <tbody>
+        {% for v in pagination.items %}
+        <tr>
+          <td><a href="{{ url_for('vendors.view', vid=v.id) }}" class="fw-semibold">{{ v.company_name }}</a></td>
+          <td>{{ v.contact_person or '—' }}</td>
+          <td>{{ v.email }}</td>
+          <td>{{ v.phone or '—' }}</td>
+          <td>{{ v.category or '—' }}</td>
+          <td>{% if v.is_approved %}<span class="badge bg-success">Yes</span>{% else %}<span class="badge bg-warning text-dark">Pending</span>{% endif %}</td>
+          <td>{{ '%.1f' % (v.rating or 0) }}</td>
+          <td class="text-end">
+            {% if current_user.is_admin %}
+              <a class="btn btn-sm btn-outline-primary" href="{{ url_for('vendors.edit', vid=v.id) }}"><i class="bi bi-pencil"></i></a>
+            {% endif %}
+          </td>
+        </tr>
+        {% else %}
+          <tr><td colspan="8" class="text-center py-4 text-secondary">No vendors yet.</td></tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</div>
+
+{% set endpoint = 'vendors.index' %}
+{% include 'partials/pagination.html' with context %}
+{% endblock %}

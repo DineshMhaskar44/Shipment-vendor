@@ -1,0 +1,110 @@
+{% extends 'base.html' %}
+{% block title %}Shipments{% endblock %}
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-3 flex-wrap gap-2">
+  <h4 class="mb-0"><i class="bi bi-box-seam"></i> Shipments</h4>
+  <div class="btn-group">
+    <a href="{{ url_for('shipments.new') }}" class="btn btn-primary btn-sm">
+      <i class="bi bi-plus-lg"></i> New
+    </a>
+    <a href="{{ url_for('shipments.bulk_import') }}" class="btn btn-outline-primary btn-sm">
+      <i class="bi bi-upload"></i> Import Excel
+    </a>
+    <a href="{{ url_for('shipments.export_xlsx', **filters) }}" class="btn btn-outline-success btn-sm">
+      <i class="bi bi-file-earmark-excel"></i> Excel
+    </a>
+    <a href="{{ url_for('shipments.export_pdf', **filters) }}" class="btn btn-outline-danger btn-sm">
+      <i class="bi bi-file-earmark-pdf"></i> PDF
+    </a>
+  </div>
+</div>
+
+<form class="card card-body shadow-sm mb-3">
+  <div class="row g-2">
+    <div class="col-md-3"><input class="form-control form-control-sm" name="q" placeholder="Search PO / OEM / Bank…" value="{{ filters.get('q','') }}"></div>
+    <div class="col-md-2">
+      <select class="form-select form-select-sm" name="oem">
+        <option value="">All OEMs</option>
+        {% for o in oems %}<option value="{{ o }}" {% if filters.get('oem')==o %}selected{% endif %}>{{ o }}</option>{% endfor %}
+      </select>
+    </div>
+    <div class="col-md-2">
+      <select class="form-select form-select-sm" name="vendor_id">
+        <option value="">All Vendors</option>
+        {% for v in vendors %}<option value="{{ v.id }}" {% if filters.get('vendor_id')|string==v.id|string %}selected{% endif %}>{{ v.company_name }}</option>{% endfor %}
+      </select>
+    </div>
+    <div class="col-md-2">
+      <select class="form-select form-select-sm" name="status">
+        <option value="">All Status</option>
+        {% for s in ['Pending','In Transit','Customs','Warehouse','Delivered','Cancelled'] %}
+        <option value="{{ s }}" {% if filters.get('status')==s %}selected{% endif %}>{{ s }}</option>
+        {% endfor %}
+      </select>
+    </div>
+    <div class="col-md-2">
+      <select class="form-select form-select-sm" name="payment_status">
+        <option value="">All Payment</option>
+        {% for s in ['Pending','Advance Paid','Balance Paid','Fully Paid'] %}
+        <option value="{{ s }}" {% if filters.get('payment_status')==s %}selected{% endif %}>{{ s }}</option>
+        {% endfor %}
+      </select>
+    </div>
+    <div class="col-md-1">
+      <select class="form-select form-select-sm" name="delay_status">
+        <option value="">Delay</option>
+        <option value="Delayed" {% if filters.get('delay_status')=='Delayed' %}selected{% endif %}>Delayed</option>
+        <option value="Non Delayed" {% if filters.get('delay_status')=='Non Delayed' %}selected{% endif %}>On time</option>
+      </select>
+    </div>
+  </div>
+  <div class="row g-2 mt-1">
+    <div class="col-md-2"><input type="date" class="form-control form-control-sm" name="start" value="{{ filters.get('start','') }}" placeholder="From"></div>
+    <div class="col-md-2"><input type="date" class="form-control form-control-sm" name="end" value="{{ filters.get('end','') }}" placeholder="To"></div>
+    <div class="col-md-3"><button class="btn btn-sm btn-primary"><i class="bi bi-funnel"></i> Filter</button>
+      <a href="{{ url_for('shipments.index') }}" class="btn btn-sm btn-outline-secondary">Clear</a>
+    </div>
+  </div>
+</form>
+
+<div class="card shadow-sm">
+  <div class="table-responsive">
+    <table class="table table-hover table-sm align-middle mb-0">
+      <thead>
+        <tr>
+          <th>PO #</th><th>OEM</th><th>Model</th><th>Qty</th>
+          <th>Mode</th><th>ETA</th><th>Status</th><th>Delay</th><th>Payment</th><th></th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for s in pagination.items %}
+        <tr>
+          <td>
+            <a href="{{ url_for('shipments.view', sid=s.id) }}" class="fw-semibold">
+              {{ s.customer_po_number or '#'+s.id|string }}
+            </a>
+            <div class="text-tiny text-secondary">{{ s.bank_name or '' }}</div>
+          </td>
+          <td>{{ s.oem_name or '—' }}</td>
+          <td>{{ s.device_model or '—' }}</td>
+          <td>{{ s.shipment_quantity or s.quantity or 0 }}</td>
+          <td>{{ s.mode or '—' }}</td>
+          <td>{{ s.proposed_eta_warehouse or '—' }}</td>
+          <td><span class="badge badge-status s-{{ (s.status or '').replace(' ','.') }}">{{ s.status }}</span></td>
+          <td><span class="badge badge-status s-{{ (s.delay_status or '').replace(' ','.') }}">{{ s.delay_status }}</span></td>
+          <td><span class="badge bg-secondary">{{ s.payment_status }}</span></td>
+          <td class="text-end">
+            <a class="btn btn-sm btn-outline-primary" href="{{ url_for('shipments.edit', sid=s.id) }}"><i class="bi bi-pencil"></i></a>
+          </td>
+        </tr>
+        {% else %}
+          <tr><td colspan="10" class="text-center py-4 text-secondary">No shipments found.</td></tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</div>
+
+{% set endpoint = 'shipments.index' %}
+{% include 'partials/pagination.html' with context %}
+{% endblock %}

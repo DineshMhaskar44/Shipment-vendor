@@ -1,0 +1,32 @@
+{% extends 'base.html' %}
+{% block title %}Users{% endblock %}
+{% block content %}
+<div class="d-flex justify-content-between mb-3">
+  <h4 class="mb-0"><i class="bi bi-person-gear"></i> Users</h4>
+  <a href="{{ url_for('admin.user_new') }}" class="btn btn-primary btn-sm"><i class="bi bi-plus-lg"></i> New user</a>
+</div>
+<div class="card shadow-sm">
+  <div class="table-responsive">
+    <table class="table table-sm table-hover mb-0 align-middle">
+      <thead><tr><th>Name</th><th>Email</th><th>Role</th><th>Active</th><th>Last login</th><th></th></tr></thead>
+      <tbody>
+        {% for u in pagination.items %}
+          <tr>
+            <td>{{ u.name }}</td><td>{{ u.email }}</td>
+            <td><span class="badge bg-info text-dark">{{ u.role }}</span></td>
+            <td>{% if u.is_active %}<span class="badge bg-success">Yes</span>{% else %}<span class="badge bg-secondary">No</span>{% endif %}</td>
+            <td>{{ u.last_login_at or '—' }}</td>
+            <td class="text-end">
+              <a class="btn btn-sm btn-outline-primary" href="{{ url_for('admin.user_edit', uid=u.id) }}"><i class="bi bi-pencil"></i></a>
+              <form method="post" action="{{ url_for('admin.user_toggle', uid=u.id) }}" class="d-inline"><input type="hidden" name="csrf_token" value="{{ csrf_token() }}"><button class="btn btn-sm btn-outline-warning"><i class="bi bi-toggle-on"></i></button></form>
+              <form method="post" action="{{ url_for('admin.user_delete', uid=u.id) }}" class="d-inline" onsubmit="return confirm('Delete user?');"><input type="hidden" name="csrf_token" value="{{ csrf_token() }}"><button class="btn btn-sm btn-outline-danger"><i class="bi bi-trash"></i></button></form>
+            </td>
+          </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</div>
+{% set endpoint = 'admin.users' %}
+{% include 'partials/pagination.html' with context %}
+{% endblock %}

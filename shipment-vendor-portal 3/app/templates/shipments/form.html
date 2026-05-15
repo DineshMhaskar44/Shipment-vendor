@@ -1,0 +1,92 @@
+{% extends 'base.html' %}
+{% block title %}{{ title }}{% endblock %}
+{% block content %}
+<h4 class="mb-3"><i class="bi bi-pencil-square"></i> {{ title }}</h4>
+
+<form method="post" class="card card-body shadow-sm">
+  {{ form.hidden_tag() }}
+
+  <ul class="nav nav-tabs mb-3">
+    <li class="nav-item"><a class="nav-link active" data-bs-toggle="tab" href="#tab-customer">Customer & OEM</a></li>
+    <li class="nav-item"><a class="nav-link" data-bs-toggle="tab" href="#tab-payments">Payments</a></li>
+    <li class="nav-item"><a class="nav-link" data-bs-toggle="tab" href="#tab-readiness">Readiness</a></li>
+    <li class="nav-item"><a class="nav-link" data-bs-toggle="tab" href="#tab-logistics">Logistics</a></li>
+    <li class="nav-item"><a class="nav-link" data-bs-toggle="tab" href="#tab-final">Final</a></li>
+  </ul>
+
+  <div class="tab-content">
+    <div class="tab-pane fade show active" id="tab-customer">
+      <div class="row g-3">
+        {% for field in [form.bank_name, form.customer_po_date, form.customer_po_number, form.oem_po_date, form.oem_po_number, form.oem_name, form.device_model, form.boe_number, form.quantity, form.shipment_quantity] %}
+          <div class="col-md-4">
+            {{ field.label(class="form-label small text-secondary") }}
+            {{ field(class="form-control form-control-sm") }}
+          </div>
+        {% endfor %}
+        <div class="col-12">
+          {{ form.branding_specification.label(class="form-label small text-secondary") }}
+          {{ form.branding_specification(class="form-control form-control-sm", rows="2") }}
+        </div>
+      </div>
+    </div>
+
+    <div class="tab-pane fade" id="tab-payments">
+      <div class="row g-3">
+        {% for field in [form.payment_status, form.advance_payment_date, form.balance_payment_date] %}
+          <div class="col-md-4">
+            {{ field.label(class="form-label small text-secondary") }}
+            {{ field(class="form-select form-select-sm" if field.type == 'SelectField' else "form-control form-control-sm") }}
+          </div>
+        {% endfor %}
+      </div>
+      <div class="alert alert-info mt-3 mb-0 text-tiny">Payment Days = Customer PO Date → Balance Payment Date (auto-calculated on save).</div>
+    </div>
+
+    <div class="tab-pane fade" id="tab-readiness">
+      <div class="row g-3">
+        {% for field in [form.oem_readiness_date, form.revised_oem_readiness_date, form.warehouse_gatein_date] %}
+          <div class="col-md-4">
+            {{ field.label(class="form-label small text-secondary") }}
+            {{ field(class="form-control form-control-sm") }}
+          </div>
+        {% endfor %}
+      </div>
+      <div class="alert alert-info mt-3 mb-0 text-tiny">Readiness Delay = Original OEM Readiness → Revised. Readiness→Warehouse = Readiness → Gate-in.</div>
+    </div>
+
+    <div class="tab-pane fade" id="tab-logistics">
+      <div class="row g-3">
+        <div class="col-md-4">
+          {{ form.logistics_partner_id.label(class="form-label small text-secondary") }}
+          {{ form.logistics_partner_id(class="form-select form-select-sm") }}
+        </div>
+        {% for field in [form.mode, form.shipment_mode_confirmation, form.committed_sailing_date, form.actual_sailing_date, form.india_port_landing_date, form.custom_clearance_date, form.proposed_eta_warehouse, form.actual_delivery_date, form.dispatch_date] %}
+          <div class="col-md-4">
+            {{ field.label(class="form-label small text-secondary") }}
+            {{ field(class="form-select form-select-sm" if field.type == 'SelectField' else "form-control form-control-sm") }}
+          </div>
+        {% endfor %}
+      </div>
+      <div class="alert alert-info mt-3 mb-0 text-tiny">Sailing Delay = Committed → Actual. CC Delay = Landing → Clearance. Total Clearance = Landing → Delivery.</div>
+    </div>
+
+    <div class="tab-pane fade" id="tab-final">
+      <div class="row g-3">
+        <div class="col-md-4">
+          {{ form.status.label(class="form-label small text-secondary") }}
+          {{ form.status(class="form-select form-select-sm") }}
+        </div>
+        <div class="col-12">
+          {{ form.handover_remarks.label(class="form-label small text-secondary") }}
+          {{ form.handover_remarks(class="form-control form-control-sm", rows="3") }}
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="mt-3 d-flex justify-content-end gap-2">
+    <a href="{{ url_for('shipments.index') }}" class="btn btn-outline-secondary btn-sm">Cancel</a>
+    <button class="btn btn-primary btn-sm">{{ form.submit.label.text }}</button>
+  </div>
+</form>
+{% endblock %}

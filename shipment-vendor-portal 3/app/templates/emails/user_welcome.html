@@ -1,0 +1,12 @@
+{% extends 'emails/_layout.html' %}
+{% block header %}Welcome to Shipment & Vendor Portal{% endblock %}
+{% block body %}
+<p>Hello {{ user.name }},</p>
+<p>An account has been created for you on the Shipment & Vendor Portal.</p>
+<table cellpadding="6" style="border-collapse:collapse;width:100%;background:#f8f9fa;border:1px solid #dee2e6;">
+  <tr><td style="font-weight:600;width:40%;">Email</td><td>{{ user.email }}</td></tr>
+  <tr><td style="font-weight:600;">Role</td><td>{{ user.role }}</td></tr>
+  <tr><td style="font-weight:600;">Temporary password</td><td><code>{{ password }}</code></td></tr>
+</table>
+<p style="margin-top:14px;">Please log in and change your password as soon as possible.</p>
+{% endblock %}

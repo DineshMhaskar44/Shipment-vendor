@@ -1,0 +1,25 @@
+{% extends 'base.html' %}
+{% block title %}Logistics delays{% endblock %}
+{% block content %}
+<div class="d-flex justify-content-between mb-3">
+  <h4 class="mb-0"><i class="bi bi-cone-striped"></i> Logistics delays</h4>
+  <a href="{{ url_for('reports.logistics_delays_xlsx') }}" class="btn btn-sm btn-outline-success"><i class="bi bi-file-earmark-excel"></i> Excel</a>
+</div>
+<div class="card shadow-sm">
+  <div class="table-responsive">
+    <table class="table table-sm table-hover datatable mb-0">
+      <thead><tr><th>ID</th><th>PO #</th><th>Logistics</th><th>Mode</th><th>Committed</th><th>Actual</th><th>Sailing Δ</th><th>Landing</th><th>Clearance</th><th>CC Δ</th></tr></thead>
+      <tbody>
+        {% for s in rows %}
+          <tr><td>{{ s.id }}</td><td><a href="{{ url_for('shipments.view', sid=s.id) }}">{{ s.customer_po_number or '#'+s.id|string }}</a></td>
+              <td>{{ s.logistics_partner_name or '' }}</td><td>{{ s.mode or '' }}</td>
+              <td>{{ s.committed_sailing_date or '' }}</td><td>{{ s.actual_sailing_date or '' }}</td>
+              <td>{{ s.sailing_delayed_days if s.sailing_delayed_days is not none else '' }}</td>
+              <td>{{ s.india_port_landing_date or '' }}</td><td>{{ s.custom_clearance_date or '' }}</td>
+              <td>{{ s.cc_delayed_days if s.cc_delayed_days is not none else '' }}</td></tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</div>
+{% endblock %}

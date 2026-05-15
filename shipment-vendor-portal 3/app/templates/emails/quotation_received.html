@@ -1,0 +1,14 @@
+{% extends 'emails/_layout.html' %}
+{% block header %}New quotation — {{ rfq.rfq_number }}{% endblock %}
+{% block body %}
+<p>A new quotation has been submitted.</p>
+<table cellpadding="6" style="border-collapse:collapse;width:100%;background:#f8f9fa;border:1px solid #dee2e6;">
+  <tr><td style="font-weight:600;width:40%;">RFQ</td><td>{{ rfq.rfq_number }} — {{ rfq.title }}</td></tr>
+  <tr><td style="font-weight:600;">Vendor</td><td>{{ vendor.company_name }} ({{ vendor.email }})</td></tr>
+  <tr><td style="font-weight:600;">Unit price</td><td>{{ q.unit_price }} {{ q.currency }}</td></tr>
+  <tr><td style="font-weight:600;">Total</td><td>{{ q.total_price }} {{ q.currency }}</td></tr>
+  <tr><td style="font-weight:600;">Delivery</td><td>{{ q.delivery_days }} days</td></tr>
+  <tr><td style="font-weight:600;">Payment terms</td><td>{{ q.payment_terms or '—' }}</td></tr>
+</table>
+<p style="margin-top:14px;">Log in to compare quotations and award the RFQ.</p>
+{% endblock %}

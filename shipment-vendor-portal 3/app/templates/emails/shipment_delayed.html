@@ -1,0 +1,15 @@
+{% extends 'emails/_layout.html' %}
+{% block header %}Shipment delay alert — Shipment #{{ s.id }}{% endblock %}
+{% block body %}
+<p>The following shipment has been flagged as <strong style="color:#dc3545;">DELAYED</strong>:</p>
+<table cellpadding="6" style="border-collapse:collapse;width:100%;background:#f8f9fa;border:1px solid #dee2e6;">
+  <tr><td style="font-weight:600;width:40%;">PO #</td><td>{{ s.customer_po_number or '#'+s.id|string }}</td></tr>
+  <tr><td style="font-weight:600;">OEM</td><td>{{ s.oem_name or '—' }}</td></tr>
+  <tr><td style="font-weight:600;">Logistics partner</td><td>{{ s.logistics_partner_name or '—' }}</td></tr>
+  <tr><td style="font-weight:600;">Readiness delay</td><td>{{ s.readiness_delay_days or 0 }} days</td></tr>
+  <tr><td style="font-weight:600;">Sailing delay</td><td>{{ s.sailing_delayed_days or 0 }} days</td></tr>
+  <tr><td style="font-weight:600;">CC delay</td><td>{{ s.cc_delayed_days or 0 }} days</td></tr>
+  <tr><td style="font-weight:600;">Status</td><td>{{ s.status }}</td></tr>
+</table>
+<p style="margin-top:14px;">Please log in to take corrective action.</p>
+{% endblock %}

@@ -1,0 +1,40 @@
+{% extends 'base.html' %}
+{% block title %}Submit quotation{% endblock %}
+{% block content %}
+<h4 class="mb-3"><i class="bi bi-pencil-square"></i> Submit quotation — RFQ {{ rfq.rfq_number }}</h4>
+
+<div class="card shadow-sm mb-3">
+  <div class="card-body">
+    <h5>{{ rfq.title }}</h5>
+    <p class="text-secondary mb-2">{{ rfq.product_details }}</p>
+    <div class="row text-tiny">
+      <div class="col-md-3"><strong>Quantity:</strong> {{ rfq.quantity }}</div>
+      <div class="col-md-3"><strong>Delivery:</strong> {{ rfq.delivery_timeline or '—' }}</div>
+      <div class="col-md-4"><strong>Deadline:</strong> {{ rfq.submission_deadline.strftime('%Y-%m-%d %H:%M') if rfq.submission_deadline else '—' }}</div>
+    </div>
+  </div>
+</div>
+
+<form method="post" enctype="multipart/form-data" class="card card-body shadow-sm">
+  {{ form.hidden_tag() }}
+  <div class="row g-3">
+    <div class="col-md-3">{{ form.unit_price.label(class="form-label") }} {{ form.unit_price(class="form-control") }}</div>
+    <div class="col-md-3">{{ form.total_price.label(class="form-label") }} {{ form.total_price(class="form-control") }}</div>
+    <div class="col-md-2">{{ form.currency.label(class="form-label") }} {{ form.currency(class="form-select") }}</div>
+    <div class="col-md-2">{{ form.delivery_days.label(class="form-label") }} {{ form.delivery_days(class="form-control") }}</div>
+    <div class="col-md-6">{{ form.payment_terms.label(class="form-label") }} {{ form.payment_terms(class="form-control") }}</div>
+    <div class="col-md-6">{{ form.warranty.label(class="form-label") }} {{ form.warranty(class="form-control") }}</div>
+    <div class="col-12">{{ form.remarks.label(class="form-label") }} {{ form.remarks(class="form-control", rows="3") }}</div>
+    <div class="col-12">
+      {{ form.file.label(class="form-label") }} {{ form.file(class="form-control") }}
+      {% if quotation and quotation.file_path %}
+        <div class="form-text">Currently attached: <code>{{ quotation.file_path.split('/')[-1] }}</code></div>
+      {% endif %}
+    </div>
+  </div>
+  <div class="mt-3 d-flex justify-content-end gap-2">
+    <a href="{{ url_for('rfq.vendor_inbox') }}" class="btn btn-outline-secondary">Cancel</a>
+    <button class="btn btn-primary"><i class="bi bi-send"></i> Submit quotation</button>
+  </div>
+</form>
+{% endblock %}

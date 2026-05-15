@@ -1,0 +1,25 @@
+{% extends 'base.html' %}
+{% block title %}Delay analysis{% endblock %}
+{% block content %}
+<div class="d-flex justify-content-between mb-3">
+  <h4 class="mb-0"><i class="bi bi-stopwatch"></i> Shipment delay analysis</h4>
+  <a href="{{ url_for('reports.delay_analysis_xlsx') }}" class="btn btn-sm btn-outline-success"><i class="bi bi-file-earmark-excel"></i> Excel</a>
+</div>
+<div class="card shadow-sm">
+  <div class="table-responsive">
+    <table class="table table-sm table-hover datatable mb-0">
+      <thead><tr><th>ID</th><th>PO #</th><th>OEM</th><th>Logistics</th><th>Readiness Δ</th><th>Sailing Δ</th><th>CC Δ</th><th>Delay</th><th>Status</th></tr></thead>
+      <tbody>
+        {% for r in rows %}
+          <tr><td>{{ r[0] }}</td><td>{{ r[1] or '' }}</td><td>{{ r[2] or '' }}</td><td>{{ r[3] or '' }}</td>
+              <td>{{ r[4] if r[4] is not none else '' }}</td>
+              <td>{{ r[5] if r[5] is not none else '' }}</td>
+              <td>{{ r[6] if r[6] is not none else '' }}</td>
+              <td><span class="badge bg-danger">{{ r[7] }}</span></td>
+              <td>{{ r[8] }}</td></tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</div>
+{% endblock %}

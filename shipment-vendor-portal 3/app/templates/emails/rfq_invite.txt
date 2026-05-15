@@ -1,0 +1,17 @@
+Dear {{ vendor.contact_person or vendor.company_name }},
+
+You have been invited to submit a quotation for:
+
+  RFQ Number: {{ rfq.rfq_number }}
+  Title:      {{ rfq.title }}
+  Quantity:   {{ rfq.quantity }}
+  Delivery:   {{ rfq.delivery_timeline or '-' }}
+  Deadline:   {{ rfq.submission_deadline.strftime('%Y-%m-%d %H:%M') if rfq.submission_deadline else '-' }}
+
+Product details:
+{{ rfq.product_details }}
+
+Submit your quotation: {{ link }}
+
+Best regards,
+{{ sender_name or "Procurement Team" }}

@@ -1,0 +1,23 @@
+{% extends 'emails/_layout.html' %}
+{% block header %}RFQ {{ rfq.rfq_number }} — Quotation requested{% endblock %}
+{% block body %}
+<p>Dear {{ vendor.contact_person or vendor.company_name }},</p>
+<p>You have been invited to submit a quotation for the following Request For Quotation:</p>
+<table cellpadding="6" style="border-collapse:collapse;width:100%;background:#f8f9fa;border:1px solid #dee2e6;">
+  <tr><td style="font-weight:600;width:40%;">RFQ Number</td><td>{{ rfq.rfq_number }}</td></tr>
+  <tr><td style="font-weight:600;">Title</td><td>{{ rfq.title }}</td></tr>
+  <tr><td style="font-weight:600;">Quantity</td><td>{{ rfq.quantity }}</td></tr>
+  <tr><td style="font-weight:600;">Delivery timeline</td><td>{{ rfq.delivery_timeline or '—' }}</td></tr>
+  <tr><td style="font-weight:600;">Submission deadline</td><td>{{ rfq.submission_deadline.strftime('%Y-%m-%d %H:%M') if rfq.submission_deadline else '—' }}</td></tr>
+</table>
+<p style="margin-top:14px;"><strong>Product details:</strong><br>{{ rfq.product_details }}</p>
+
+<p style="margin:24px 0;text-align:center;">
+  <a href="{{ link }}" style="background:#0d6efd;color:#fff;padding:12px 24px;border-radius:6px;text-decoration:none;display:inline-block;">
+    Submit Your Quotation
+  </a>
+</p>
+
+<p>If you have any questions, please contact our procurement team.</p>
+<p>Best regards,<br>{{ sender_name or "Procurement Team" }}</p>
+{% endblock %}

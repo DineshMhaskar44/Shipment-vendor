@@ -1,0 +1,25 @@
+{% extends 'base.html' %}
+{% block title %}Reports{% endblock %}
+{% block content %}
+<h4 class="mb-3"><i class="bi bi-bar-chart"></i> Reports</h4>
+<div class="row g-3">
+  {% set items = [
+    ('delay_analysis', 'Shipment delay analysis', 'bi-stopwatch', 'danger'),
+    ('vendor_performance', 'Vendor (logistics) performance', 'bi-truck', 'primary'),
+    ('oem_performance', 'OEM performance', 'bi-cpu', 'info'),
+    ('payment_pending', 'Payment pending', 'bi-cash-coin', 'warning'),
+    ('logistics_delays', 'Logistics delays', 'bi-cone-striped', 'danger'),
+    ('monthly', 'Monthly MIS', 'bi-calendar3', 'success'),
+  ] %}
+  {% for ep, label, icon, color in items %}
+    <div class="col-md-4">
+      <a href="{{ url_for('reports.' ~ ep) }}" class="card shadow-sm-hover text-decoration-none h-100">
+        <div class="card-body">
+          <div class="text-{{ color }} display-6"><i class="bi {{ icon }}"></i></div>
+          <h6 class="mt-2 mb-0">{{ label }}</h6>
+        </div>
+      </a>
+    </div>
+  {% endfor %}
+</div>
+{% endblock %}

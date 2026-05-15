@@ -1,0 +1,27 @@
+{% extends 'base.html' %}
+{% block title %}Monthly MIS {{ year }}{% endblock %}
+{% block content %}
+<div class="d-flex justify-content-between mb-3 flex-wrap gap-2">
+  <h4 class="mb-0"><i class="bi bi-calendar3"></i> Monthly MIS — {{ year }}</h4>
+  <form class="d-flex gap-2">
+    <input type="number" name="year" class="form-control form-control-sm" style="width:120px;" value="{{ year }}">
+    <button class="btn btn-sm btn-primary"><i class="bi bi-funnel"></i> Filter</button>
+    <a href="{{ url_for('reports.monthly_xlsx', year=year) }}" class="btn btn-sm btn-outline-success"><i class="bi bi-file-earmark-excel"></i> Excel</a>
+  </form>
+</div>
+<div class="card shadow-sm">
+  <div class="table-responsive">
+    <table class="table table-sm table-hover mb-0">
+      <thead><tr><th>Month</th><th class="text-end">Total</th><th class="text-end">Delivered</th><th class="text-end">Delayed</th><th class="text-end">Quantity</th></tr></thead>
+      <tbody>
+        {% set months = ['','Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'] %}
+        {% for r in rows %}
+          <tr><td>{{ months[r[0]|int] }}</td><td class="text-end">{{ r[1] }}</td><td class="text-end">{{ r[2] or 0 }}</td><td class="text-end">{{ r[3] or 0 }}</td><td class="text-end">{{ r[4] or 0 }}</td></tr>
+        {% else %}
+          <tr><td colspan="5" class="text-center py-4 text-secondary">No data for {{ year }}.</td></tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</div>
+{% endblock %}

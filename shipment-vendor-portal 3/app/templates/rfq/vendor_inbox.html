@@ -1,0 +1,36 @@
+{% extends 'base.html' %}
+{% block title %}My RFQs{% endblock %}
+{% block content %}
+<h4 class="mb-3"><i class="bi bi-inbox"></i> RFQ Inbox</h4>
+<div class="card shadow-sm">
+  <div class="table-responsive">
+    <table class="table table-hover mb-0 align-middle">
+      <thead><tr><th>RFQ #</th><th>Title</th><th>Quantity</th><th>Deadline</th><th>Status</th><th>Action</th></tr></thead>
+      <tbody>
+        {% for inv in invites %}
+          <tr>
+            <td><strong>{{ inv.rfq.rfq_number }}</strong></td>
+            <td>{{ inv.rfq.title }}</td>
+            <td>{{ inv.rfq.quantity }}</td>
+            <td>{{ inv.rfq.submission_deadline.strftime('%Y-%m-%d %H:%M') if inv.rfq.submission_deadline else '—' }}</td>
+            <td>
+              {% if inv.responded_at %}
+                <span class="badge bg-success">Submitted {{ inv.responded_at.strftime('%Y-%m-%d') }}</span>
+              {% else %}
+                <span class="badge bg-warning text-dark">Pending</span>
+              {% endif %}
+            </td>
+            <td>
+              <a class="btn btn-sm btn-primary" href="{{ url_for('rfq.vendor_quote', rid=inv.rfq.id) }}">
+                <i class="bi bi-pencil-square"></i> {{ 'Update' if inv.responded_at else 'Submit' }}
+              </a>
+            </td>
+          </tr>
+        {% else %}
+          <tr><td colspan="6" class="text-center py-4 text-secondary">No RFQs have been sent to you yet.</td></tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</div>
+{% endblock %}

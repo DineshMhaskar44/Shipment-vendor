@@ -1,0 +1,51 @@
+{% extends 'base.html' %}
+{% block title %}RFQs{% endblock %}
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-3">
+  <h4 class="mb-0"><i class="bi bi-file-earmark-text"></i> RFQs</h4>
+  {% if current_user.is_admin %}
+    <a href="{{ url_for('rfq.new') }}" class="btn btn-primary btn-sm"><i class="bi bi-plus-lg"></i> New RFQ</a>
+  {% endif %}
+</div>
+
+<form class="card card-body shadow-sm mb-3">
+  <div class="row g-2">
+    <div class="col-md-4"><input class="form-control form-control-sm" name="q" placeholder="Search RFQ # or title…" value="{{ filters.get('q','') }}"></div>
+    <div class="col-md-3">
+      <select class="form-select form-select-sm" name="status">
+        <option value="">All status</option>
+        {% for s in ['Draft','Open','Closed','Awarded','Cancelled'] %}
+          <option value="{{ s }}" {% if filters.get('status')==s %}selected{% endif %}>{{ s }}</option>
+        {% endfor %}
+      </select>
+    </div>
+    <div class="col-md-2"><button class="btn btn-sm btn-primary"><i class="bi bi-funnel"></i> Filter</button></div>
+  </div>
+</form>
+
+<div class="card shadow-sm">
+  <div class="table-responsive">
+    <table class="table table-hover table-sm align-middle mb-0">
+      <thead><tr><th>RFQ #</th><th>Title</th><th>Qty</th><th>Vendors</th><th>Quotations</th><th>Status</th><th>Deadline</th></tr></thead>
+      <tbody>
+        {% for r in pagination.items %}
+          <tr>
+            <td><a href="{{ url_for('rfq.view', rid=r.id) }}" class="fw-semibold">{{ r.rfq_number }}</a></td>
+            <td>{{ r.title }}</td>
+            <td>{{ r.quantity }}</td>
+            <td>{{ r.rfq_vendors.count() }}</td>
+            <td>{{ r.quotations.count() }}</td>
+            <td><span class="badge bg-secondary">{{ r.status }}</span></td>
+            <td>{{ r.submission_deadline.strftime('%Y-%m-%d %H:%M') if r.submission_deadline else '—' }}</td>
+          </tr>
+        {% else %}
+          <tr><td colspan="7" class="text-center py-4 text-secondary">No RFQs yet.</td></tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</div>
+
+{% set endpoint = 'rfq.index' %}
+{% include 'partials/pagination.html' with context %}
+{% endblock %}

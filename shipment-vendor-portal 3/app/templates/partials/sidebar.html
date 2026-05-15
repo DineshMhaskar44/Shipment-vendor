@@ -1,0 +1,59 @@
+<aside class="sidebar">
+  <div class="brand">
+    <i class="bi bi-truck"></i>
+    <span>SVP</span>
+  </div>
+  <nav class="nav flex-column">
+    {% if current_user.is_vendor %}
+      <a class="nav-link {% if request.endpoint=='rfq.vendor_inbox' %}active{% endif %}"
+         href="{{ url_for('rfq.vendor_inbox') }}">
+        <i class="bi bi-inbox"></i> My RFQs
+      </a>
+    {% else %}
+      <a class="nav-link {% if request.endpoint=='dashboard.index' %}active{% endif %}"
+         href="{{ url_for('dashboard.index') }}">
+        <i class="bi bi-speedometer2"></i> Dashboard
+      </a>
+      <a class="nav-link {% if request.blueprint=='shipments' %}active{% endif %}"
+         href="{{ url_for('shipments.index') }}">
+        <i class="bi bi-box-seam"></i> Shipments
+      </a>
+      <a class="nav-link {% if request.blueprint=='rfq' %}active{% endif %}"
+         href="{{ url_for('rfq.index') }}">
+        <i class="bi bi-file-earmark-text"></i> RFQs
+      </a>
+      <a class="nav-link {% if request.blueprint=='vendors' %}active{% endif %}"
+         href="{{ url_for('vendors.index') }}">
+        <i class="bi bi-people"></i> Vendors
+      </a>
+      <a class="nav-link {% if request.blueprint=='reports' %}active{% endif %}"
+         href="{{ url_for('reports.index') }}">
+        <i class="bi bi-bar-chart"></i> Reports
+      </a>
+      {% if current_user.is_admin %}
+        <hr class="text-secondary">
+        <small class="text-muted px-3">ADMIN</small>
+        <a class="nav-link {% if request.endpoint=='admin.users' %}active{% endif %}"
+           href="{{ url_for('admin.users') }}">
+          <i class="bi bi-person-gear"></i> Users
+        </a>
+        <a class="nav-link {% if request.endpoint=='admin.vendor_approvals' %}active{% endif %}"
+           href="{{ url_for('admin.vendor_approvals') }}">
+          <i class="bi bi-patch-check"></i> Vendor approvals
+        </a>
+        <a class="nav-link {% if request.endpoint=='admin.activity' %}active{% endif %}"
+           href="{{ url_for('admin.activity') }}">
+          <i class="bi bi-clock-history"></i> Activity log
+        </a>
+        <a class="nav-link {% if request.endpoint=='admin.emails' %}active{% endif %}"
+           href="{{ url_for('admin.emails') }}">
+          <i class="bi bi-envelope-paper"></i> Email log
+        </a>
+        <a class="nav-link {% if request.endpoint=='admin.settings' %}active{% endif %}"
+           href="{{ url_for('admin.settings') }}">
+          <i class="bi bi-gear"></i> Settings
+        </a>
+      {% endif %}
+    {% endif %}
+  </nav>
+</aside>

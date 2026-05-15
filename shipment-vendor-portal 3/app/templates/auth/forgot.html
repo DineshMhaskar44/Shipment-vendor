@@ -1,0 +1,17 @@
+{% extends 'base.html' %}
+{% block title %}Forgot password{% endblock %}
+{% block auth_content %}
+<div class="auth-card">
+  <div class="brand"><i class="bi bi-key"></i> Forgot password</div>
+  <p class="text-secondary mb-4">Enter your email and we'll send a reset link.</p>
+  <form method="post">
+    {{ form.hidden_tag() }}
+    <div class="mb-3">
+      {{ form.email.label(class="form-label") }}
+      {{ form.email(class="form-control", autofocus=true) }}
+    </div>
+    <button class="btn btn-primary w-100" type="submit">Send reset link</button>
+    <a href="{{ url_for('auth.login') }}" class="btn btn-link w-100 mt-2">Back to login</a>
+  </form>
+</div>
+{% endblock %}

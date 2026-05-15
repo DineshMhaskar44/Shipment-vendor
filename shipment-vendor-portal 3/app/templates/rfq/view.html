@@ -1,0 +1,75 @@
+{% extends 'base.html' %}
+{% block title %}RFQ {{ rfq.rfq_number }}{% endblock %}
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-3 flex-wrap gap-2">
+  <h4 class="mb-0">
+    <i class="bi bi-file-earmark-text"></i> RFQ {{ rfq.rfq_number }}
+    <span class="badge bg-secondary">{{ rfq.status }}</span>
+  </h4>
+  <div class="btn-group">
+    <a href="{{ url_for('rfq.compare_xlsx', rid=rfq.id) }}" class="btn btn-sm btn-outline-success"><i class="bi bi-file-earmark-excel"></i> Excel</a>
+    <a href="{{ url_for('rfq.compare_pdf', rid=rfq.id) }}" class="btn btn-sm btn-outline-danger"><i class="bi bi-file-earmark-pdf"></i> PDF</a>
+    {% if current_user.is_admin and rfq.status != 'Closed' %}
+      <form method="post" action="{{ url_for('rfq.close', rid=rfq.id) }}" class="d-inline">
+        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+        <button class="btn btn-sm btn-outline-warning"><i class="bi bi-x-circle"></i> Close RFQ</button>
+      </form>
+    {% endif %}
+  </div>
+</div>
+
+<div class="card shadow-sm mb-3">
+  <div class="card-body">
+    <h5>{{ rfq.title }}</h5>
+    <p class="text-secondary mb-2">{{ rfq.product_details }}</p>
+    <div class="row text-tiny">
+      <div class="col-md-3"><strong>Quantity:</strong> {{ rfq.quantity }}</div>
+      <div class="col-md-3"><strong>Delivery:</strong> {{ rfq.delivery_timeline or '—' }}</div>
+      <div class="col-md-3"><strong>Deadline:</strong> {{ rfq.submission_deadline.strftime('%Y-%m-%d %H:%M') if rfq.submission_deadline else '—' }}</div>
+      <div class="col-md-3"><strong>Invited:</strong> {{ rfq.rfq_vendors.count() }} vendors</div>
+    </div>
+  </div>
+</div>
+
+<div class="card shadow-sm">
+  <div class="card-header bg-transparent"><strong>Quotations comparison</strong></div>
+  <div class="table-responsive">
+    <table class="table table-hover table-sm align-middle mb-0">
+      <thead><tr>
+        <th>Vendor</th><th class="text-end">Unit price</th><th class="text-end">Total</th>
+        <th>Currency</th><th>Delivery (days)</th><th>Payment terms</th>
+        <th>Warranty</th><th>File</th><th>Submitted</th><th></th>
+      </tr></thead>
+      <tbody>
+        {% for q in quotations %}
+          <tr class="{% if q.is_selected %}table-success{% endif %}">
+            <td>{{ q.vendor.company_name }}</td>
+            <td class="text-end">{{ '%.2f' % q.unit_price if q.unit_price is not none else '—' }}</td>
+            <td class="text-end">{{ '%.2f' % q.total_price if q.total_price is not none else '—' }}</td>
+            <td>{{ q.currency }}</td>
+            <td>{{ q.delivery_days or '—' }}</td>
+            <td>{{ q.payment_terms or '—' }}</td>
+            <td>{{ q.warranty or '—' }}</td>
+            <td>
+              {% if q.file_path %}<a href="{{ url_for('rfq.download_quotation_file', qid=q.id) }}"><i class="bi bi-paperclip"></i></a>{% else %}—{% endif %}
+            </td>
+            <td>{{ q.submitted_at.strftime('%Y-%m-%d') if q.submitted_at else '—' }}</td>
+            <td class="text-end">
+              {% if current_user.is_admin and rfq.status != 'Awarded' %}
+                <form method="post" action="{{ url_for('rfq.award', rid=rfq.id, qid=q.id) }}" class="d-inline" onsubmit="return confirm('Award RFQ to {{ q.vendor.company_name }}?');">
+                  <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                  <button class="btn btn-sm btn-success"><i class="bi bi-check2-circle"></i> Award</button>
+                </form>
+              {% elif q.is_selected %}
+                <span class="badge bg-success">Awarded</span>
+              {% endif %}
+            </td>
+          </tr>
+        {% else %}
+          <tr><td colspan="10" class="text-center py-4 text-secondary">No quotations submitted yet.</td></tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</div>
+{% endblock %}

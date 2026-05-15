@@ -1,0 +1,26 @@
+{% extends 'base.html' %}
+{% block title %}Vendor performance{% endblock %}
+{% block content %}
+<div class="d-flex justify-content-between mb-3">
+  <h4 class="mb-0"><i class="bi bi-truck"></i> Vendor performance</h4>
+  <a href="{{ url_for('reports.vendor_performance_xlsx') }}" class="btn btn-sm btn-outline-success"><i class="bi bi-file-earmark-excel"></i> Excel</a>
+</div>
+<div class="card shadow-sm">
+  <div class="table-responsive">
+    <table class="table table-sm table-hover datatable mb-0">
+      <thead><tr><th>Vendor</th><th class="text-end">Total</th><th class="text-end">Delayed</th><th class="text-end">Avg sail Δ</th><th class="text-end">Avg CC Δ</th><th class="text-end">% on time</th></tr></thead>
+      <tbody>
+        {% for r in rows %}
+          {% set total = r[1] %}
+          {% set delayed = r[2] or 0 %}
+          {% set ontime = (100 * (total - delayed) / total) if total else 0 %}
+          <tr><td>{{ r[0] }}</td><td class="text-end">{{ total }}</td><td class="text-end">{{ delayed }}</td>
+            <td class="text-end">{{ '%.1f' % (r[3] or 0) }}</td>
+            <td class="text-end">{{ '%.1f' % (r[4] or 0) }}</td>
+            <td class="text-end"><strong class="{% if ontime>=80 %}text-success{% elif ontime>=50 %}text-warning{% else %}text-danger{% endif %}">{{ '%.0f%%' % ontime }}</strong></td></tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</div>
+{% endblock %}

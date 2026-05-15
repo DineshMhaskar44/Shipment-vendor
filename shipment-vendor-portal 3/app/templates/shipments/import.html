@@ -1,0 +1,36 @@
+{% extends 'base.html' %}
+{% block title %}Bulk import shipments{% endblock %}
+{% block content %}
+<h4 class="mb-3"><i class="bi bi-upload"></i> Bulk import shipments</h4>
+
+<div class="row g-3">
+  <div class="col-lg-5">
+    <div class="card shadow-sm">
+      <div class="card-body">
+        <form method="post" enctype="multipart/form-data">
+          {{ form.hidden_tag() }}
+          <div class="mb-3">
+            {{ form.file.label(class="form-label") }}
+            {{ form.file(class="form-control") }}
+            <div class="form-text">Excel file (.xlsx) only. Max 20 MB.</div>
+          </div>
+          <button class="btn btn-primary"><i class="bi bi-upload"></i> Upload</button>
+        </form>
+      </div>
+    </div>
+  </div>
+  <div class="col-lg-7">
+    <div class="card shadow-sm">
+      <div class="card-header bg-transparent"><strong>Expected columns</strong></div>
+      <div class="card-body">
+        <p class="text-secondary small">Header row should match these column labels (case-insensitive). Extra/missing columns are ignored. Date format: YYYY-MM-DD.</p>
+        <div class="row">
+          {% for label in columns %}
+            <div class="col-md-6"><i class="bi bi-dot"></i> {{ label }}</div>
+          {% endfor %}
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

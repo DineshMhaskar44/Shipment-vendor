@@ -1,0 +1,25 @@
+{% extends 'base.html' %}
+{% block title %}Payment pending{% endblock %}
+{% block content %}
+<div class="d-flex justify-content-between mb-3">
+  <h4 class="mb-0"><i class="bi bi-cash-coin"></i> Payment pending</h4>
+  <a href="{{ url_for('reports.payment_pending_xlsx') }}" class="btn btn-sm btn-outline-success"><i class="bi bi-file-earmark-excel"></i> Excel</a>
+</div>
+<div class="card shadow-sm">
+  <div class="table-responsive">
+    <table class="table table-sm table-hover datatable mb-0">
+      <thead><tr><th>ID</th><th>PO #</th><th>OEM</th><th>Bank</th><th>PO date</th><th>Advance</th><th>Balance</th><th>Status</th></tr></thead>
+      <tbody>
+        {% for s in rows %}
+          <tr><td>{{ s.id }}</td><td><a href="{{ url_for('shipments.view', sid=s.id) }}">{{ s.customer_po_number }}</a></td>
+              <td>{{ s.oem_name or '' }}</td><td>{{ s.bank_name or '' }}</td>
+              <td>{{ s.customer_po_date or '' }}</td>
+              <td>{{ s.advance_payment_date or '' }}</td>
+              <td>{{ s.balance_payment_date or '' }}</td>
+              <td><span class="badge bg-warning text-dark">{{ s.payment_status }}</span></td></tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</div>
+{% endblock %}

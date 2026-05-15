@@ -1,0 +1,99 @@
+{% extends 'base.html' %}
+{% block title %}Shipment #{{ s.id }}{% endblock %}
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-3">
+  <h4 class="mb-0">
+    <i class="bi bi-box-seam"></i> Shipment {{ s.customer_po_number or '#'+s.id|string }}
+    <span class="badge badge-status s-{{ (s.status or '').replace(' ','.') }}">{{ s.status }}</span>
+    <span class="badge badge-status s-{{ (s.delay_status or '').replace(' ','.') }}">{{ s.delay_status }}</span>
+  </h4>
+  <div class="btn-group">
+    <a class="btn btn-sm btn-outline-primary" href="{{ url_for('shipments.edit', sid=s.id) }}"><i class="bi bi-pencil"></i> Edit</a>
+    <form method="post" action="{{ url_for('shipments.delete', sid=s.id) }}" class="d-inline"
+          onsubmit="return confirm('Delete this shipment?');">
+      <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+      <button class="btn btn-sm btn-outline-danger"><i class="bi bi-trash"></i> Delete</button>
+    </form>
+  </div>
+</div>
+
+<div class="row g-3">
+  <div class="col-lg-6">
+    <div class="card shadow-sm h-100">
+      <div class="card-header bg-transparent"><strong>Customer & OEM</strong></div>
+      <div class="card-body">
+        <dl class="row mb-0">
+          <dt class="col-sm-5">Bank</dt><dd class="col-sm-7">{{ s.bank_name or '—' }}</dd>
+          <dt class="col-sm-5">Customer PO</dt><dd class="col-sm-7">{{ s.customer_po_number or '—' }} <span class="text-secondary">({{ s.customer_po_date or '—' }})</span></dd>
+          <dt class="col-sm-5">OEM PO</dt><dd class="col-sm-7">{{ s.oem_po_number or '—' }} <span class="text-secondary">({{ s.oem_po_date or '—' }})</span></dd>
+          <dt class="col-sm-5">OEM</dt><dd class="col-sm-7">{{ s.oem_name or '—' }}</dd>
+          <dt class="col-sm-5">Device model</dt><dd class="col-sm-7">{{ s.device_model or '—' }}</dd>
+          <dt class="col-sm-5">BOE #</dt><dd class="col-sm-7">{{ s.boe_number or '—' }}</dd>
+          <dt class="col-sm-5">Quantity</dt><dd class="col-sm-7">{{ s.quantity or 0 }} (shipped {{ s.shipment_quantity or 0 }})</dd>
+          <dt class="col-sm-5">Branding spec</dt><dd class="col-sm-7">{{ s.branding_specification or '—' }}</dd>
+        </dl>
+      </div>
+    </div>
+  </div>
+  <div class="col-lg-6">
+    <div class="card shadow-sm h-100">
+      <div class="card-header bg-transparent"><strong>Payments</strong></div>
+      <div class="card-body">
+        <dl class="row mb-0">
+          <dt class="col-sm-5">Status</dt><dd class="col-sm-7"><span class="badge bg-secondary">{{ s.payment_status }}</span></dd>
+          <dt class="col-sm-5">Advance date</dt><dd class="col-sm-7">{{ s.advance_payment_date or '—' }}</dd>
+          <dt class="col-sm-5">Balance date</dt><dd class="col-sm-7">{{ s.balance_payment_date or '—' }}</dd>
+          <dt class="col-sm-5">Payment days (PO→pay)</dt><dd class="col-sm-7">{{ s.payment_days if s.payment_days is not none else '—' }}</dd>
+        </dl>
+      </div>
+    </div>
+  </div>
+
+  <div class="col-lg-6">
+    <div class="card shadow-sm h-100">
+      <div class="card-header bg-transparent"><strong>Readiness</strong></div>
+      <div class="card-body">
+        <dl class="row mb-0">
+          <dt class="col-sm-6">OEM readiness</dt><dd class="col-sm-6">{{ s.oem_readiness_date or '—' }}</dd>
+          <dt class="col-sm-6">Revised readiness</dt><dd class="col-sm-6">{{ s.revised_oem_readiness_date or '—' }}</dd>
+          <dt class="col-sm-6">Readiness delay (days)</dt><dd class="col-sm-6"><strong>{{ s.readiness_delay_days if s.readiness_delay_days is not none else '—' }}</strong></dd>
+          <dt class="col-sm-6">Warehouse gate-in</dt><dd class="col-sm-6">{{ s.warehouse_gatein_date or '—' }}</dd>
+          <dt class="col-sm-6">Readiness→Warehouse (days)</dt><dd class="col-sm-6">{{ s.readiness_to_warehouse_days if s.readiness_to_warehouse_days is not none else '—' }}</dd>
+        </dl>
+      </div>
+    </div>
+  </div>
+  <div class="col-lg-6">
+    <div class="card shadow-sm h-100">
+      <div class="card-header bg-transparent"><strong>Logistics</strong></div>
+      <div class="card-body">
+        <dl class="row mb-0">
+          <dt class="col-sm-6">Logistics partner</dt><dd class="col-sm-6">{{ s.logistics_partner_name or '—' }}</dd>
+          <dt class="col-sm-6">Mode / confirmation</dt><dd class="col-sm-6">{{ s.mode or '—' }} ({{ s.shipment_mode_confirmation or '—' }})</dd>
+          <dt class="col-sm-6">Committed sailing</dt><dd class="col-sm-6">{{ s.committed_sailing_date or '—' }}</dd>
+          <dt class="col-sm-6">Actual sailing</dt><dd class="col-sm-6">{{ s.actual_sailing_date or '—' }}</dd>
+          <dt class="col-sm-6">Sailing delay (days)</dt><dd class="col-sm-6"><strong>{{ s.sailing_delayed_days if s.sailing_delayed_days is not none else '—' }}</strong></dd>
+          <dt class="col-sm-6">India port landing</dt><dd class="col-sm-6">{{ s.india_port_landing_date or '—' }}</dd>
+          <dt class="col-sm-6">Custom clearance</dt><dd class="col-sm-6">{{ s.custom_clearance_date or '—' }}</dd>
+          <dt class="col-sm-6">CC delay (days)</dt><dd class="col-sm-6"><strong>{{ s.cc_delayed_days if s.cc_delayed_days is not none else '—' }}</strong></dd>
+          <dt class="col-sm-6">Proposed ETA warehouse</dt><dd class="col-sm-6">{{ s.proposed_eta_warehouse or '—' }}</dd>
+          <dt class="col-sm-6">Actual delivery</dt><dd class="col-sm-6">{{ s.actual_delivery_date or '—' }}</dd>
+          <dt class="col-sm-6">Total clearance days</dt><dd class="col-sm-6">{{ s.total_clearance_days if s.total_clearance_days is not none else '—' }}</dd>
+          <dt class="col-sm-6">Dispatch date</dt><dd class="col-sm-6">{{ s.dispatch_date or '—' }}</dd>
+        </dl>
+      </div>
+    </div>
+  </div>
+
+  <div class="col-12">
+    <div class="card shadow-sm">
+      <div class="card-header bg-transparent"><strong>Handover remarks</strong></div>
+      <div class="card-body"><pre class="mb-0" style="white-space:pre-wrap;">{{ s.handover_remarks or '—' }}</pre></div>
+    </div>
+  </div>
+</div>
+
+<div class="text-secondary mt-3 text-tiny">
+  Created {{ s.created_at }} · Updated {{ s.updated_at }}
+</div>
+{% endblock %}

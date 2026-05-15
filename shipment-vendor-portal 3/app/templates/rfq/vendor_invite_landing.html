@@ -1,0 +1,13 @@
+{% extends 'base.html' %}
+{% block title %}RFQ Invitation{% endblock %}
+{% block auth_content %}
+<div class="auth-card" style="max-width:560px;">
+  <div class="brand"><i class="bi bi-envelope-paper"></i> RFQ Invitation</div>
+  <h5>{{ rfq.title }}</h5>
+  <p class="text-secondary">RFQ <strong>{{ rfq.rfq_number }}</strong> has been sent to {{ vendor.company_name }}.</p>
+  <hr>
+  <p>To submit your quotation, please log in with your vendor account.</p>
+  <a href="{{ url_for('auth.login') }}" class="btn btn-primary w-100">Sign in to respond</a>
+  <p class="text-secondary text-tiny mt-3 mb-0">If you don't yet have a vendor account, please contact the procurement team.</p>
+</div>
+{% endblock %}

@@ -1,0 +1,26 @@
+{% extends 'base.html' %}
+{% block title %}Email log{% endblock %}
+{% block content %}
+<h4 class="mb-3"><i class="bi bi-envelope-paper"></i> Email log</h4>
+<div class="card shadow-sm">
+  <div class="table-responsive">
+    <table class="table table-sm align-middle mb-0">
+      <thead><tr><th>When</th><th>To</th><th>Subject</th><th>Template</th><th>Status</th><th>Linked</th></tr></thead>
+      <tbody>
+        {% for e in pagination.items %}
+          <tr>
+            <td class="text-tiny">{{ e.created_at.strftime('%Y-%m-%d %H:%M') }}</td>
+            <td>{{ e.to_address }}</td>
+            <td>{{ e.subject }}</td>
+            <td><code>{{ e.template }}</code></td>
+            <td><span class="badge bg-{{ 'success' if e.status=='sent' else 'danger' }}">{{ e.status }}</span></td>
+            <td>{{ e.related_type or '' }}{% if e.related_id %} #{{ e.related_id }}{% endif %}</td>
+          </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</div>
+{% set endpoint = 'admin.emails' %}
+{% include 'partials/pagination.html' with context %}
+{% endblock %}

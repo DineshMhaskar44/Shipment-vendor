@@ -1,0 +1,13 @@
+{% extends 'base.html' %}
+{% block title %}Reset password{% endblock %}
+{% block auth_content %}
+<div class="auth-card">
+  <div class="brand"><i class="bi bi-shield-lock"></i> Reset password</div>
+  <form method="post">
+    {{ form.hidden_tag() }}
+    <div class="mb-3">{{ form.password.label(class="form-label") }} {{ form.password(class="form-control") }}</div>
+    <div class="mb-3">{{ form.confirm.label(class="form-label") }} {{ form.confirm(class="form-control") }}</div>
+    <button class="btn btn-primary w-100">Update password</button>
+  </form>
+</div>
+{% endblock %}
